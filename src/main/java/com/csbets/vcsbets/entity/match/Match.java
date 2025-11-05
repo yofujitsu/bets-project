@@ -20,11 +20,14 @@ public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Instant matchDateTime;
-    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "match", fetch = FetchType.LAZY)
     private List<Bet> placedBets = new ArrayList<>();
     private String team1Name;
     private String team2Name;
+    @ElementCollection
+    private List<String> team1Players = new ArrayList<>();
+    @ElementCollection
+    private List<String> team2Players = new ArrayList<>();
     private short team1Score;
     private short team2Score;
     private MatchStatus status;

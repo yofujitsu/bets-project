@@ -7,21 +7,25 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 public class MatchesInitializer {
 
-    private MatchRepository matchRepository;
+    private final MatchRepository matchRepository;
 
     @PostConstruct
     public void initMatches() {
-        if(matchRepository.count() == 0) {
-            for(long i = 0; i < 16; ++i) {
+        List<Match> matches = new ArrayList<>();
+        if(matchRepository.findAll().isEmpty()) {
+            for(long i = 1; i <= 14; ++i) {
                 Match match = new Match();
-                match.setId(i++);
                 match.setStatus(MatchStatus.PRE_MATCH);
-                matchRepository.save(match);
+                matches.add(match);
             }
         }
+        matchRepository.saveAll(matches);
     }
 }

@@ -2,6 +2,7 @@ package com.csbets.vcsbets.entity.bet;
 
 import com.csbets.vcsbets.entity.match.Match;
 import com.csbets.vcsbets.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,7 +15,6 @@ import java.time.Instant;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "bet_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Bet {
@@ -22,18 +22,18 @@ public abstract class Bet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String steamId64;
     @ManyToOne
+    @JoinColumn(name = "match_id")
     private Match match;
-    @Enumerated(EnumType.STRING)
-    private BetType betType;
     @Enumerated(EnumType.STRING)
     private BetResult betResult;
     private short betAmount;
+    private double coefficient;
     private short winningsAmount;
     @CreationTimestamp
     private Instant timestamp;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 }

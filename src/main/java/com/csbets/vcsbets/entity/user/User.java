@@ -1,13 +1,13 @@
 package com.csbets.vcsbets.entity.user;
 
 import com.csbets.vcsbets.entity.bet.Bet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity(name = "users")
 @EqualsAndHashCode(callSuper = false)
@@ -17,18 +17,17 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class User {
-
     @Id
-    @UuidGenerator
-    private UUID id;
+    private Long id;
     private String username;
     private String password;
-    private String steamId64;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private String steamLink;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Bet> placedBets = new ArrayList<>();
-    private short creditBalance;
-    private short winningsBalance;
-    private int placedBetsCount;
-    private double betsWinRate;
-    private UserRole role;
+    private short creditBalance = 1800;
+    private short winningsBalance = 0;
+    private int placedBetsCount = 0;
+    private double betsWinRate = 0.0;
+    private UserRole role = UserRole.USER;
 }
