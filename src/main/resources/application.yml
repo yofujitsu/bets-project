@@ -17,3 +17,11 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true
+        http-only: true
+        same-site: none
