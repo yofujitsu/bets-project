@@ -5,6 +5,7 @@ import com.csbets.vcsbets.dto.match.MatchResultDto;
 import com.csbets.vcsbets.entity.match.MatchMap;
 import com.csbets.vcsbets.service.MatchService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,14 +25,16 @@ public class MatchController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{matchId}/map")
-    public void setMapToMatch(@PathVariable Long matchId, @RequestParam MatchMap matchMap) {
+    public ResponseEntity<Void> setMapToMatch(@PathVariable Long matchId, @RequestParam MatchMap matchMap) {
         matchService.setMapToMatch(matchMap, matchId);
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/fill/{matchId}")
-    public void fillMatchResults(@PathVariable Long matchId, @RequestBody MatchResultDto matchDto) {
+    public ResponseEntity<Void> fillMatchResults(@PathVariable Long matchId, @RequestBody MatchResultDto matchDto) {
         matchService.fillMatchResults(matchId, matchDto);
+        return ResponseEntity.ok().build();
     }
 
 }

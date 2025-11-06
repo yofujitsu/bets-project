@@ -34,8 +34,9 @@ public class ProfileController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
-    public void saveUser(@RequestBody User user) {
+    public ResponseEntity<Void> saveUser(@RequestBody User user) {
         userService.save(user);
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -46,7 +47,8 @@ public class ProfileController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/set-pass/{username}")
-    public void setPassword(@PathVariable String username, @RequestParam String password) {
+    public ResponseEntity<Void> setPassword(@PathVariable String username, @RequestParam String password) {
         userService.setPassword(username, password);
+        return ResponseEntity.ok().build();
     }
 }

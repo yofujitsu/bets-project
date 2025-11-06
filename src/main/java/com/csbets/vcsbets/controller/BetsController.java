@@ -19,19 +19,21 @@ public class BetsController {
     private final BetsService betsService;
 
     @PostMapping("/series-outcome")
-    public void placeMatchOutcomeBet(
+    public ResponseEntity<Void> placeMatchOutcomeBet(
             @RequestBody MatchOutcomeBetPlaceDto betDto,
             @RequestParam String username
     ) {
         betsService.placeMatchOutcomeBet(betDto, username);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/total")
-    public void placeTotalRoundsBet(
+    public ResponseEntity<Void> placeTotalRoundsBet(
             @RequestBody TotalRoundsBetPlaceDto betDto,
             @RequestParam String username
     ) {
         betsService.placeTotalRoundsBet(betDto, username);
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")

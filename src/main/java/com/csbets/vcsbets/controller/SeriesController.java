@@ -21,20 +21,22 @@ public class SeriesController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/init")
-    public void fillMatchData(
+    public ResponseEntity<Void> fillMatchData(
             @PathVariable Long id,
             @RequestBody SeriesInitDto dto
     ) {
         seriesService.fillMatchData(id, dto);
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/status")
-    public void changeStatus(
+    public ResponseEntity<Void> changeStatus(
             @PathVariable Long id,
             @RequestParam SeriesStatus status
     ) {
         seriesService.changeSeriesStatus(id, status);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
