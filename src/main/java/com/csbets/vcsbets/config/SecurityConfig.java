@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 "/api/series/*/init",
                                 "/api/series/*/status"
                         ).hasRole("ADMIN")
-                        .requestMatchers("/api/auth/*", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/api/auth/*", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml", "/swagger-ui.html").permitAll()
                         .anyRequest().hasAnyRole("ADMIN", "USER")
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
