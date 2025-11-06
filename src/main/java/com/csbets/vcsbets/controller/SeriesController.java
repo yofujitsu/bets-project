@@ -1,5 +1,7 @@
 package com.csbets.vcsbets.controller;
 
+import com.csbets.vcsbets.dto.match.MatchDto;
+import com.csbets.vcsbets.dto.match.SeriesDto;
 import com.csbets.vcsbets.dto.match.SeriesInitDto;
 import com.csbets.vcsbets.entity.match.SeriesStatus;
 import com.csbets.vcsbets.service.SeriesService;
@@ -7,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/series")
@@ -17,32 +21,30 @@ public class SeriesController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/init")
-    public ResponseEntity<String> fillMatchData(
+    public void fillMatchData(
             @PathVariable Long id,
             @RequestBody SeriesInitDto dto
     ) {
         seriesService.fillMatchData(id, dto);
-        return ResponseEntity.ok("Match initialized successfully.");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/status")
-    public ResponseEntity<String> changeStatus(
+    public void changeStatus(
             @PathVariable Long id,
             @RequestParam SeriesStatus status
     ) {
         seriesService.changeSeriesStatus(id, status);
-        return ResponseEntity.ok("Match status updated to " + status);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getMatch(@PathVariable Long id) {
-        return ResponseEntity.ok(seriesService.getSeriesDto(id));
+    public SeriesDto getMatch(@PathVariable Long id) {
+        return seriesService.getSeriesDto(id);
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllMatches() {
-        return ResponseEntity.ok(seriesService.getAllSeries());
+    public List<SeriesDto> getAllMatches() {
+        return seriesService.getAllSeries();
     }
 
 }
