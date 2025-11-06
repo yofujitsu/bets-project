@@ -23,7 +23,7 @@ public class UsersInitializer {
             new UserSeedDto(2190222333L, "rel1segod", "https://steamcommunity.com/id/rel1seg0d"),
             new UserSeedDto(2190333444L, "YouMore", "https://steamcommunity.com/profiles/76561199212124731/"),
             new UserSeedDto(2190444555L, "WhatIsLove", "https://steamcommunity.com/profiles/76561198295068808/"),
-            new UserSeedDto(2190555666L, "Vini Boombatz", "https://steamcommunity.com/id/KazanMangal/"),
+            new UserSeedDto(2190555666L, "Vinni Boombatz", "https://steamcommunity.com/id/KazanMangal/"),
             new UserSeedDto(2190666777L, "nikno8", "https://steamcommunity.com/id/nikitalaguT/"),
             new UserSeedDto(2190777888L, "3Be3Da yIIaJla上帝", "https://steamcommunity.com/profiles/76561198831754010/"),
             new UserSeedDto(2190888999L, "Sa1der", "https://steamcommunity.com/profiles/76561199529515417/"),

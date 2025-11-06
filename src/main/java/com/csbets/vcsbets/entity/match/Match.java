@@ -4,7 +4,6 @@ import com.csbets.vcsbets.entity.bet.Bet;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Match {
 
     @Id
@@ -22,15 +20,15 @@ public class Match {
     private Long id;
     @OneToMany(mappedBy = "match", fetch = FetchType.LAZY)
     private List<Bet> placedBets = new ArrayList<>();
-    private String team1Name;
-    private String team2Name;
+    private String team1Name = "team1";
+    private String team2Name = "team2";
     @ElementCollection
     private List<String> team1Players = new ArrayList<>();
     @ElementCollection
     private List<String> team2Players = new ArrayList<>();
-    private short team1Score;
-    private short team2Score;
-    private MatchStatus status;
+    private short team1Score = 0;
+    private short team2Score = 0;
+    private MatchStatus status = MatchStatus.PRE_MATCH;
     private MatchResult matchResult;
     private MatchMap map;
 }

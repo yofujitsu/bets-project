@@ -1,14 +1,11 @@
 package com.csbets.vcsbets.controller;
 
-import com.csbets.vcsbets.dto.bet.MatchOutcomeBetDto;
-import com.csbets.vcsbets.dto.bet.TotalRoundsBetDto;
-import com.csbets.vcsbets.entity.bet.Bet;
+import com.csbets.vcsbets.dto.bet.MatchOutcomeBetPlaceDto;
+import com.csbets.vcsbets.dto.bet.TotalRoundsBetPlaceDto;
 import com.csbets.vcsbets.service.BetsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/bets")
@@ -19,7 +16,7 @@ public class BetsController {
 
     @PostMapping("/match-outcome")
     public ResponseEntity<String> placeMatchOutcomeBet(
-            @RequestBody MatchOutcomeBetDto betDto,
+            @RequestBody MatchOutcomeBetPlaceDto betDto,
             @RequestParam String username
     ) {
         betsService.placeMatchOutcomeBet(betDto, username);
@@ -28,21 +25,15 @@ public class BetsController {
 
     @PostMapping("/total-rounds")
     public ResponseEntity<String> placeTotalRoundsBet(
-            @RequestBody TotalRoundsBetDto betDto,
+            @RequestBody TotalRoundsBetPlaceDto betDto,
             @RequestParam String steam64
     ) {
         betsService.placeTotalRoundsBet(betDto, steam64);
         return ResponseEntity.ok("Total rounds bet placed or updated successfully.");
     }
 
-    @PostMapping("/withdraw/{matchId}")
-    public ResponseEntity<String> withdrawalPlacedBets(@PathVariable Long matchId) {
-        betsService.withdrawalPlacedBets(matchId);
-        return ResponseEntity.ok("Withdrawal processed for match " + matchId);
-    }
-
     @GetMapping
-    public ResponseEntity<List<Bet>> getAllBets() {
+    public ResponseEntity<?> getAllBets() {
         return ResponseEntity.ok(betsService.getAllBets());
     }
 

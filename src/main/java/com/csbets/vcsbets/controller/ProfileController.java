@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -16,9 +14,8 @@ public class ProfileController {
     private final UserService userService;
 
     @GetMapping("/{username}")
-    public ResponseEntity<User> getUser(@PathVariable String username) {
-        User user = userService.getUserByUsername(username);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<?> getUser(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getUserDtoByUsername(username));
     }
 
     @PutMapping

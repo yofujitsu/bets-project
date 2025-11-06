@@ -44,7 +44,7 @@ public class MatchController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getMatch(@PathVariable Long id) {
-        return ResponseEntity.ok(matchService.getMatch(id));
+        return ResponseEntity.ok(matchService.getMatchDto(id));
     }
 
     @GetMapping
