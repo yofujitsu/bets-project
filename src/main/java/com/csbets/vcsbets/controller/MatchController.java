@@ -5,6 +5,7 @@ import com.csbets.vcsbets.dto.match.MatchResultDto;
 import com.csbets.vcsbets.entity.match.MatchMap;
 import com.csbets.vcsbets.service.MatchService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +22,14 @@ public class MatchController {
         return matchService.getAllMatchesBySeries(seriesId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{matchId}/map")
     public void setMapToMatch(@PathVariable Long matchId, @RequestParam MatchMap matchMap) {
         matchService.setMapToMatch(matchMap, matchId);
     }
 
-    @PostMapping("/{matchId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/fill/{matchId}")
     public void fillMatchResults(@PathVariable Long matchId, @RequestBody MatchResultDto matchDto) {
         matchService.fillMatchResults(matchId, matchDto);
     }

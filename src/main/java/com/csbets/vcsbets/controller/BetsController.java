@@ -5,6 +5,7 @@ import com.csbets.vcsbets.dto.bet.TotalRoundsBetPlaceDto;
 import com.csbets.vcsbets.service.BetsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,13 +33,15 @@ public class BetsController {
         return ResponseEntity.ok("Total rounds bet placed or updated successfully.");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<?> getAllBets() {
         return ResponseEntity.ok(betsService.getAllBets());
     }
 
-    @GetMapping("/{matchId}")
-    public ResponseEntity<?> getBetById(@PathVariable Long matchId) {
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/match/{matchId}")
+    public ResponseEntity<?> getBetsById(@PathVariable Long matchId) {
         return ResponseEntity.ok(betsService.getAllBetsByMatchId(matchId));
     }
 

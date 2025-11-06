@@ -6,6 +6,7 @@ import com.csbets.vcsbets.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class AdminInitializer {
             User admin = new User();
             admin.setId(1L);
             admin.setUsername("admin");
-            admin.setPassword("admin");
+            admin.setPassword(new BCryptPasswordEncoder().encode("0wkMxGeU#PHc"));
             admin.setRole(UserRole.ADMIN);
             admin.setCreditBalance((short) 0);
             userRepository.save(admin);

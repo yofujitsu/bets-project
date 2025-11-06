@@ -5,6 +5,7 @@ import com.csbets.vcsbets.entity.user.User;
 import com.csbets.vcsbets.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден")));
     }
 
-    private UserDto convertToUserDTO(User user) {
+    public UserDto convertToUserDTO(User user) {
         return new UserDto(
                 user.getId(),
                 user.getUsername(),
@@ -46,5 +47,13 @@ public class UserService {
                 user.getBetsWinRate(),
                 user.getRole()
         );
+    }
+
+    public void setPassword(String username, String password) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        assert user != null;
+        user.setPassword(encoder.encode(password));
+        userRepository.save(user);
     }
 }

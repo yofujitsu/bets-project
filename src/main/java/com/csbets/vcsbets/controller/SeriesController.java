@@ -5,6 +5,7 @@ import com.csbets.vcsbets.entity.match.SeriesStatus;
 import com.csbets.vcsbets.service.SeriesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,7 @@ public class SeriesController {
 
     private final SeriesService seriesService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/init")
     public ResponseEntity<String> fillMatchData(
             @PathVariable Long id,
@@ -23,6 +25,7 @@ public class SeriesController {
         return ResponseEntity.ok("Match initialized successfully.");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/status")
     public ResponseEntity<String> changeStatus(
             @PathVariable Long id,
