@@ -37,6 +37,10 @@ public class BetsService {
         if (series.getTeam1Players().contains(username) || series.getTeam2Players().contains(username))
             throw new RuntimeException("322 на свои матчи запрещены!");
 
+        if(series.getTeam1Players().isEmpty() || series.getTeam2Players().isEmpty()) {
+            throw new RuntimeException("Нельзя сделать ставку на неизвестность :/");
+        }
+
         MatchOutcomeBet existingBet = (MatchOutcomeBet) betsRepository.findMatchOutcomeBetByUserAndSeries_Id(
                         userService.getUserByUsername(username), series.getId())
                 .orElse(null);
@@ -72,6 +76,10 @@ public class BetsService {
         if (series.getTeam1Players().contains(username) || series.getTeam2Players().contains(username))
             throw new RuntimeException("322 на свои матчи запрещены!");
 
+        if(series.getTeam1Players().isEmpty() || series.getTeam2Players().isEmpty()) {
+            throw new RuntimeException("Нельзя сделать ставку на неизвестность :/");
+        }
+
         if (series.getSeriesFormat().equals(SeriesFormat.BO1) &&
                 (totalRoundsBetPlaceDto.roundsCount() < 18 ||
                         totalRoundsBetPlaceDto.roundsCount() > 23)) {
@@ -93,7 +101,7 @@ public class BetsService {
             existingBet.setRoundsCount(totalRoundsBetPlaceDto.roundsCount());
             existingBet.setType(totalRoundsBetPlaceDto.type());
             existingBet.setCoefficient(TOTAL_ROUNDS_COEFFICIENT);
-            existingBet.setWinningsAmount((short) (BET_AMOUNT * TOTAL_ROUNDS_COEFFICIENT));
+            existingBet.setWinningsAmount((short) ((BET_AMOUNT - 100) * TOTAL_ROUNDS_COEFFICIENT));
             log.info("Updated existing total rounds bet: {}", existingBet);
             betsRepository.save(existingBet);
             return;
