@@ -1,10 +1,11 @@
 package com.csbets.vcsbets.dto.bet;
 
 import com.csbets.vcsbets.entity.bet.TotalRoundsBetType;
+import jakarta.validation.constraints.Positive;
 
 public record TotalRoundsBetPlaceDto(
-        Long matchId,
+        Long seriesId,
         TotalRoundsBetType type,
-        short roundsCount
+        @Positive short roundsCount
 ) {
 }

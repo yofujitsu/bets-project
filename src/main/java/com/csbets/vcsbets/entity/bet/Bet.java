@@ -1,6 +1,6 @@
 package com.csbets.vcsbets.entity.bet;
 
-import com.csbets.vcsbets.entity.match.Match;
+import com.csbets.vcsbets.entity.match.Series;
 import com.csbets.vcsbets.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -23,8 +23,8 @@ public abstract class Bet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "match_id")
-    private Match match;
+    @JoinColumn(name = "series_id")
+    private Series series;
     @Enumerated(EnumType.STRING)
     private BetResult betResult;
     private short betAmount;

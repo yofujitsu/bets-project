@@ -1,10 +1,10 @@
 package com.csbets.vcsbets.service;
 
-import com.csbets.vcsbets.dto.bet.*;
+import com.csbets.vcsbets.dto.bet.BetDto;
+import com.csbets.vcsbets.dto.bet.MatchOutcomeBetPlaceDto;
+import com.csbets.vcsbets.dto.bet.TotalRoundsBetPlaceDto;
 import com.csbets.vcsbets.entity.bet.*;
-import com.csbets.vcsbets.entity.match.Match;
-import com.csbets.vcsbets.entity.match.MatchResult;
-import com.csbets.vcsbets.entity.match.MatchStatus;
+import com.csbets.vcsbets.entity.match.*;
 import com.csbets.vcsbets.entity.user.User;
 import com.csbets.vcsbets.repository.BetsRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -22,28 +21,28 @@ import java.util.stream.Collectors;
 public class BetsService {
 
     private final BetsRepository betsRepository;
-    private final MatchService matchService;
+    private final SeriesService seriesService;
     private final UserService userService;
 
     private static final short BET_AMOUNT = 150;
     private static final short MATCH_OUTCOME_COEFFICIENT = 2;
-    private static final double TOTAL_ROUNDS_COEFFICIENT = 1.5;
+    private static final double TOTAL_ROUNDS_COEFFICIENT = 1.4;
 
     public void placeMatchOutcomeBet(MatchOutcomeBetPlaceDto matchOutcomeBetPlaceDto, String username) {
-        Match match = matchService.getMatch(matchOutcomeBetPlaceDto.matchId());
+        Series series = seriesService.getSeries(matchOutcomeBetPlaceDto.seriesId());
 
         if (userService.getUserByUsername(username).getCreditBalance() < BET_AMOUNT)
             throw new RuntimeException("Средств на балансе не хватает чуток(");
 
-        if (match.getTeam1Players().contains(username) || match.getTeam2Players().contains(username))
+        if (series.getTeam1Players().contains(username) || series.getTeam2Players().contains(username))
             throw new RuntimeException("322 на свои матчи запрещены!");
 
-        MatchOutcomeBet existingBet = (MatchOutcomeBet) betsRepository.findMatchOutcomeBetByUserAndMatch_Id(
-                        userService.getUserByUsername(username), match.getId())
+        MatchOutcomeBet existingBet = (MatchOutcomeBet) betsRepository.findMatchOutcomeBetByUserAndSeries_Id(
+                        userService.getUserByUsername(username), series.getId())
                 .orElse(null);
 
         if (existingBet != null) {
-            if (match.getStatus() == MatchStatus.LIVE || match.getStatus() == MatchStatus.ENDED)
+            if (series.getStatus() == SeriesStatus.LIVE || series.getStatus() == SeriesStatus.ENDED)
                 throw new RuntimeException("Матч уже начался. Изменение ставки запрещено!");
 
             existingBet.setTeamName(matchOutcomeBetPlaceDto.teamName());
@@ -56,7 +55,7 @@ public class BetsService {
         }
 
         MatchOutcomeBet newBet = new MatchOutcomeBet();
-        newBet.setMatch(match);
+        newBet.setSeries(series);
         newBet.setTeamName(matchOutcomeBetPlaceDto.teamName());
         newBet.setMatchOutcomeResult(matchOutcomeBetPlaceDto.matchOutcomeResult());
         newBet.setBetAmount(BET_AMOUNT);
@@ -68,17 +67,28 @@ public class BetsService {
     }
 
     public void placeTotalRoundsBet(TotalRoundsBetPlaceDto totalRoundsBetPlaceDto, String username) {
-        Match match = matchService.getMatch(totalRoundsBetPlaceDto.matchId());
+        Series series = seriesService.getSeries(totalRoundsBetPlaceDto.seriesId());
 
-        if (match.getTeam1Players().contains(username) || match.getTeam2Players().contains(username))
+        if (series.getTeam1Players().contains(username) || series.getTeam2Players().contains(username))
             throw new RuntimeException("322 на свои матчи запрещены!");
 
-        TotalRoundsBet existingBet = (TotalRoundsBet) betsRepository.findTotalRoundsBetByUserAndMatch_Id(
-                        userService.getUserByUsername(username), match.getId())
+        if (series.getSeriesFormat().equals(SeriesFormat.BO1) &&
+                (totalRoundsBetPlaceDto.roundsCount() < 18 ||
+                        totalRoundsBetPlaceDto.roundsCount() > 23)) {
+            throw new RuntimeException("Для БО1 можно ставить на тотал раундов в 17.5Б(М) - 22.5Б(М)");
+        }
+
+        if (series.getSeriesFormat().equals(SeriesFormat.BO3) &&
+                totalRoundsBetPlaceDto.roundsCount() != 2) {
+            throw new RuntimeException("Для БО3 можно ставить на тотал карт: 2.5Б 2.5М");
+        }
+
+        TotalRoundsBet existingBet = (TotalRoundsBet) betsRepository.findTotalRoundsBetByUserAndSeries_Id(
+                        userService.getUserByUsername(username), series.getId())
                 .orElse(null);
 
         if (existingBet != null) {
-            if (match.getStatus() == MatchStatus.LIVE || match.getStatus() == MatchStatus.ENDED)
+            if (series.getStatus() == SeriesStatus.LIVE || series.getStatus() == SeriesStatus.ENDED)
                 throw new RuntimeException("Матч уже начался. Изменение ставки запрещено!");
             existingBet.setRoundsCount(totalRoundsBetPlaceDto.roundsCount());
             existingBet.setType(totalRoundsBetPlaceDto.type());
@@ -90,7 +100,7 @@ public class BetsService {
         }
 
         TotalRoundsBet newBet = new TotalRoundsBet();
-        newBet.setMatch(match);
+        newBet.setSeries(series);
         newBet.setUser(userService.getUserByUsername(username));
         newBet.setRoundsCount(totalRoundsBetPlaceDto.roundsCount());
         newBet.setType(totalRoundsBetPlaceDto.type());
@@ -103,17 +113,17 @@ public class BetsService {
 
     @Transactional
     public void withdrawalPlacedBets(Long matchId) {
-        Match match = matchService.getMatch(matchId);
-        List<Bet> bets = betsRepository.findAllByMatch_Id(matchId);
+        Series series = seriesService.getSeries(matchId);
+        List<Bet> bets = betsRepository.findAllBySeries_Id(matchId);
         for (Bet bet : bets) {
-            processBet(match, bet);
+            processBet(series, bet);
         }
         log.info("Withdrawal for match {} completed ({} bets processed)", matchId, bets.size());
     }
 
-    private void processBet(Match match, Bet bet) {
+    private void processBet(Series series, Bet bet) {
         User user = bet.getUser();
-        boolean won = isBetWinning(match, bet);
+        boolean won = isBetWinning(series, bet);
 
         updateBetAndUserBalances(bet, user, won);
         updateUserStatistics(user);
@@ -122,28 +132,34 @@ public class BetsService {
         userService.save(user);
     }
 
-    private boolean isBetWinning(Match match, Bet bet) {
+    private boolean isBetWinning(Series series, Bet bet) {
         if (bet instanceof MatchOutcomeBet matchOutcomeBet) {
-            return isMatchOutcomeBetWinning(match, matchOutcomeBet);
+            return isMatchOutcomeBetWinning(series, matchOutcomeBet);
         } else if (bet instanceof TotalRoundsBet totalRoundsBet) {
-            return isTotalRoundsBetWinning(match, totalRoundsBet);
+            return isTotalRoundsBetWinning(series, totalRoundsBet);
         }
         return false;
     }
 
-    private boolean isMatchOutcomeBetWinning(Match match, MatchOutcomeBet bet) {
-        String winnerTeam = match.getMatchResult() == MatchResult.TEAM1_WON
-                ? match.getTeam1Name()
-                : match.getTeam2Name();
+    private boolean isMatchOutcomeBetWinning(Series series, MatchOutcomeBet bet) {
+        String winnerTeam = series.getSeriesResult() == SeriesResult.TEAM1_WON
+                ? series.getTeam1Name()
+                : series.getTeam2Name();
 
         return bet.getTeamName().equals(winnerTeam);
     }
 
-    private boolean isTotalRoundsBetWinning(Match match, TotalRoundsBet bet) {
-        short totalRounds = (short) (match.getTeam1Score() + match.getTeam2Score());
+    private boolean isTotalRoundsBetWinning(Series series, TotalRoundsBet bet) {
+        List<Match> matches = series.getMatches();
+        short total;
+        if (series.getSeriesFormat().equals(SeriesFormat.BO1)) {
+            total = (short) (matches.get(0).getTeam1Rounds() + matches.get(0).getTeam2Rounds());
+        } else {
+            total = (short) (series.getTeam1Score() + series.getTeam2Score());
+        }
         return switch (bet.getType()) {
-            case OVER -> totalRounds > bet.getRoundsCount();
-            case UNDER -> totalRounds < bet.getRoundsCount();
+            case OVER -> total > bet.getRoundsCount();
+            case UNDER -> total <= bet.getRoundsCount();
         };
     }
 
@@ -176,7 +192,7 @@ public class BetsService {
     }
 
     public List<BetDto> getAllBetsByMatchId(Long matchId) {
-        return betsRepository.findAllByMatch_Id(matchId).stream()
+        return betsRepository.findAllBySeries_Id(matchId).stream()
                 .map(this::convertToBetDTO)
                 .toList();
     }
@@ -190,8 +206,7 @@ public class BetsService {
     public BetDto convertToBetDTO(Bet bet) {
         return new BetDto(
                 bet.getId(),
-                bet.getUser().getSteamLink(),
-                bet.getMatch().getId(),
+                bet.getSeries().getId(),
                 bet instanceof MatchOutcomeBet ? BetType.MATCH_WINNER : BetType.TOTAL_ROUNDS,
                 bet.getBetResult(),
                 bet.getBetAmount(),

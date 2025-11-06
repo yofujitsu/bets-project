@@ -14,7 +14,7 @@ public class BetsController {
 
     private final BetsService betsService;
 
-    @PostMapping("/match-outcome")
+    @PostMapping("/series-outcome")
     public ResponseEntity<String> placeMatchOutcomeBet(
             @RequestBody MatchOutcomeBetPlaceDto betDto,
             @RequestParam String username
@@ -23,12 +23,12 @@ public class BetsController {
         return ResponseEntity.ok("Match outcome bet placed or updated successfully.");
     }
 
-    @PostMapping("/total-rounds")
+    @PostMapping("/total")
     public ResponseEntity<String> placeTotalRoundsBet(
             @RequestBody TotalRoundsBetPlaceDto betDto,
-            @RequestParam String steam64
+            @RequestParam String username
     ) {
-        betsService.placeTotalRoundsBet(betDto, steam64);
+        betsService.placeTotalRoundsBet(betDto, username);
         return ResponseEntity.ok("Total rounds bet placed or updated successfully.");
     }
 

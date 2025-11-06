@@ -11,11 +11,11 @@ import java.util.UUID;
 
 @Repository
 public interface BetsRepository extends JpaRepository<Bet, UUID> {
-    List<Bet> findAllByMatch_Id(Long matchId);
+    List<Bet> findAllBySeries_Id(Long seriesId);
 
-    Optional<Bet> findTotalRoundsBetByUserAndMatch_Id(User User, Long matchId);
+    Optional<Bet> findTotalRoundsBetByUserAndSeries_Id(User User, Long seriesId);
 
-    Optional<Bet> findMatchOutcomeBetByUserAndMatch_Id(User User, Long matchId);
+    Optional<Bet> findMatchOutcomeBetByUserAndSeries_Id(User User, Long seriesId);
 
     List<Bet> findAllByUser(User User);
 }

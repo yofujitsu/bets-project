@@ -1,55 +1,34 @@
 package com.csbets.vcsbets.controller;
 
-import com.csbets.vcsbets.dto.match.MatchInitDto;
-import com.csbets.vcsbets.entity.match.MatchStatus;
+import com.csbets.vcsbets.dto.match.MatchDto;
+import com.csbets.vcsbets.dto.match.MatchResultDto;
+import com.csbets.vcsbets.entity.match.MatchMap;
 import com.csbets.vcsbets.service.MatchService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/matches")
 @RequiredArgsConstructor
+@RequestMapping("/api/matches")
 public class MatchController {
 
     private final MatchService matchService;
 
-    @PostMapping("/{id}/init")
-    public ResponseEntity<String> fillMatchData(
-            @PathVariable Long id,
-            @RequestBody MatchInitDto dto
-    ) {
-        matchService.fillMatchData(id, dto);
-        return ResponseEntity.ok("Match initialized successfully.");
+    @GetMapping("/{seriesId}")
+    public List<MatchDto> getAllMatchesBySeries(@PathVariable Long seriesId) {
+        return matchService.getAllMatchesBySeries(seriesId);
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<String> changeStatus(
-            @PathVariable Long id,
-            @RequestParam MatchStatus status
-    ) {
-        matchService.changeMatchStatus(id, status);
-        return ResponseEntity.ok("Match status updated to " + status);
+    @PostMapping("/{matchId}/map")
+    public void setMapToMatch(@PathVariable Long matchId, @RequestParam MatchMap matchMap) {
+        matchService.setMapToMatch(matchMap, matchId);
     }
 
-    @PutMapping("/{id}/result")
-    public ResponseEntity<String> changeResult(
-            @PathVariable Long id,
-            @RequestParam short team1Score,
-            @RequestParam short team2Score
-    ) {
-        matchService.changeMatchResult(id, team1Score, team2Score);
-        return ResponseEntity.ok("Match result updated successfully.");
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getMatch(@PathVariable Long id) {
-        return ResponseEntity.ok(matchService.getMatchDto(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<?> getAllMatches() {
-        return ResponseEntity.ok(matchService.getAllMatches());
+    @PostMapping("/{matchId}")
+    public void fillMatchResults(@PathVariable Long matchId, @RequestBody MatchResultDto matchDto) {
+        matchService.fillMatchResults(matchId, matchDto);
     }
 
 }

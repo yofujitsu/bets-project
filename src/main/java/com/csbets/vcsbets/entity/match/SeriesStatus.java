@@ -1,5 +1,5 @@
 package com.csbets.vcsbets.entity.match;
 
-public enum MatchStatus {
+public enum SeriesStatus {
     PRE_MATCH, LIVE, ENDED
 }

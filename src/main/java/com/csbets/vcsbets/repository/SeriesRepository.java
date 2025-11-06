@@ -1,14 +1,9 @@
 package com.csbets.vcsbets.repository;
 
-import com.csbets.vcsbets.entity.match.Match;
 import com.csbets.vcsbets.entity.match.Series;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface MatchRepository extends JpaRepository<Match, Long> {
-
-    List<Match> findAllBySeriesOn(Series series);
+public interface SeriesRepository extends JpaRepository<Series, Long> {
 }

@@ -9,8 +9,7 @@ import java.time.Instant;
 
 public record BetDto(
         Long id,
-        String steamId64,
-        Long matchId,
+        Long seriesId,
         BetType betType,
         BetResult betResult,
         short betAmount,
