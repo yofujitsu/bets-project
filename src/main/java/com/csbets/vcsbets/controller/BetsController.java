@@ -48,8 +48,8 @@ public class BetsController {
     }
 
     @GetMapping("/{matchId}/for-stream")
-    public Integer forStream(@PathVariable Long matchId) {
-        return betsService.forStream(matchId);
+    public ResponseEntity<Integer> forStream(@PathVariable Long matchId) {
+        return ResponseEntity.ok(betsService.forStream(matchId));
     }
 
     @GetMapping("/{username}/bets")
