@@ -21,9 +21,7 @@ public class OpenApiConfig {
                 .components(new Components().addSecuritySchemes("basicAuth", basicAuthScheme()))
                 .servers(List.of(
                         new Server().url("http://localhost:8080")
-                                .description("Local development server"),
-                        new Server().url("http://77.221.158.197:8080")
-                                .description("Prod server")
+                                .description("Local development server")
                 ))
                 .info(new Info()
                         .title("VCS Bets API")
