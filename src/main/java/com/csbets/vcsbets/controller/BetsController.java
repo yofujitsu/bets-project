@@ -42,10 +42,14 @@ public class BetsController {
         return betsService.getAllBets();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/match/{matchId}")
     public List<BetDto> getBetsById(@PathVariable Long matchId) {
         return betsService.getAllBetsByMatchId(matchId);
+    }
+
+    @GetMapping("/{matchId}/for-stream")
+    public Integer forStream(@PathVariable Long matchId) {
+        return betsService.forStream(matchId);
     }
 
     @GetMapping("/{username}/bets")

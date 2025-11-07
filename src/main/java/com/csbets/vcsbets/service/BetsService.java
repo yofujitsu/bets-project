@@ -229,4 +229,7 @@ public class BetsService {
         );
     }
 
+    public Integer forStream(Long matchId) {
+        return betsRepository.findAllBySeries_Id(matchId).stream().mapToInt(Bet::getBetAmount).sum();
+    }
 }
