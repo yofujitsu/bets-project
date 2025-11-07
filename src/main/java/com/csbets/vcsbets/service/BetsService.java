@@ -222,6 +222,8 @@ public class BetsService {
                 bet.getWinningsAmount(),
                 bet.getTimestamp(),
                 bet.getUser().getUsername(),
+                bet.getSeries().getTeam1Name(),
+                bet.getSeries().getTeam2Name(),
                 bet instanceof MatchOutcomeBet ? ((MatchOutcomeBet) bet).getTeamName() : null,
                 bet instanceof MatchOutcomeBet ? MatchOutcomeResult.valueOf(String.valueOf(((MatchOutcomeBet) bet).getMatchOutcomeResult())) : null,
                 bet instanceof TotalRoundsBet ? TotalRoundsBetType.valueOf(String.valueOf(((TotalRoundsBet) bet).getType())) : null,

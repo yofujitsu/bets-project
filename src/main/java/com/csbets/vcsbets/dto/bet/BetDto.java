@@ -17,6 +17,8 @@ public record BetDto(
         short winningsAmount,
         Instant timestamp,
         String username,
+        String team1Name,
+        String team2Name,
         String teamName,
         MatchOutcomeResult matchOutcomeResult,
         TotalRoundsBetType totalRoundsBetType,
