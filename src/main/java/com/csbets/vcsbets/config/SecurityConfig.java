@@ -81,7 +81,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("https://vitejs-vite-duplicat-qz9u.bolt.host"));
+        config.setAllowedOrigins(List.of("https://vitejs-vite-duplicat-qz9u.bolt.host", "https://veronika-duo-cup-lan-kbe3.bolt.host"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         source.registerCorsConfiguration("/**", config);
