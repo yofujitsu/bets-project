@@ -114,7 +114,7 @@ public class BetsService {
         newBet.setType(totalRoundsBetPlaceDto.type());
         newBet.setBetAmount((short) (BET_AMOUNT - 100));
         newBet.setCoefficient(TOTAL_ROUNDS_COEFFICIENT);
-        newBet.setWinningsAmount((short) (BET_AMOUNT * TOTAL_ROUNDS_COEFFICIENT));
+        newBet.setWinningsAmount((short) ((BET_AMOUNT - 100) * TOTAL_ROUNDS_COEFFICIENT));
         log.info("Placed new total rounds bet: {}", newBet);
         betsRepository.save(newBet);
     }
