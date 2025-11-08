@@ -26,7 +26,7 @@ public class BetsService {
 
     private static final short BET_AMOUNT = 150;
     private static final short MATCH_OUTCOME_COEFFICIENT = 2;
-    private static final double TOTAL_ROUNDS_COEFFICIENT = 1.4;
+    private static final double TOTAL_ROUNDS_COEFFICIENT = 1.5;
 
     public void placeMatchOutcomeBet(MatchOutcomeBetPlaceDto matchOutcomeBetPlaceDto, String username) {
         Series series = seriesService.getSeries(matchOutcomeBetPlaceDto.seriesId());
@@ -41,7 +41,7 @@ public class BetsService {
             throw new RuntimeException("Нельзя сделать ставку на неизвестность :/");
         }
 
-        MatchOutcomeBet existingBet = (MatchOutcomeBet) betsRepository.findMatchOutcomeBetByUserAndSeries_Id(
+        MatchOutcomeBet existingBet = betsRepository.findMatchOutcomeBetByUserAndSeries_Id(
                         userService.getUserByUsername(username), series.getId())
                 .orElse(null);
 
@@ -91,7 +91,7 @@ public class BetsService {
             throw new RuntimeException("Для БО3 можно ставить на тотал карт: 2.5Б 2.5М");
         }
 
-        TotalRoundsBet existingBet = (TotalRoundsBet) betsRepository.findTotalRoundsBetByUserAndSeries_Id(
+        TotalRoundsBet existingBet = betsRepository.findTotalRoundsBetByUserAndSeries_Id(
                         userService.getUserByUsername(username), series.getId())
                 .orElse(null);
 
@@ -112,7 +112,7 @@ public class BetsService {
         newBet.setUser(userService.getUserByUsername(username));
         newBet.setRoundsCount(totalRoundsBetPlaceDto.roundsCount());
         newBet.setType(totalRoundsBetPlaceDto.type());
-        newBet.setBetAmount(BET_AMOUNT);
+        newBet.setBetAmount((short) (BET_AMOUNT - 100));
         newBet.setCoefficient(TOTAL_ROUNDS_COEFFICIENT);
         newBet.setWinningsAmount((short) (BET_AMOUNT * TOTAL_ROUNDS_COEFFICIENT));
         log.info("Placed new total rounds bet: {}", newBet);
@@ -222,8 +222,8 @@ public class BetsService {
                 bet.getWinningsAmount(),
                 bet.getTimestamp(),
                 bet.getUser().getUsername(),
-                bet.getSeries().getTeam1Name(),
-                bet.getSeries().getTeam2Name(),
+                bet.getSeries().getTeam1Players().get(0) + " " + bet.getSeries().getTeam1Players().get(1),
+                bet.getSeries().getTeam2Players().get(0) + " " + bet.getSeries().getTeam2Players().get(1),
                 bet instanceof MatchOutcomeBet ? ((MatchOutcomeBet) bet).getTeamName() : null,
                 bet instanceof MatchOutcomeBet ? MatchOutcomeResult.valueOf(String.valueOf(((MatchOutcomeBet) bet).getMatchOutcomeResult())) : null,
                 bet instanceof TotalRoundsBet ? TotalRoundsBetType.valueOf(String.valueOf(((TotalRoundsBet) bet).getType())) : null,
