@@ -54,5 +54,5 @@ jobs:
             docker run -d \
               --name spring-app \
               --restart unless-stopped \
-              -p 8080:8080 \
+              -p 8081:8081 \
               ${{ secrets.DOCKER_IMAGE }}:latest
