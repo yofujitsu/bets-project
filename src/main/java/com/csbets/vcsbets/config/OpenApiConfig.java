@@ -20,7 +20,7 @@ public class OpenApiConfig {
                 .addSecurityItem(new SecurityRequirement().addList("basicAuth"))
                 .components(new Components().addSecuritySchemes("basicAuth", basicAuthScheme()))
                 .servers(List.of(
-                        new Server().url("http://http://72.56.86.54/:8081")
+                        new Server().url("http://http://72.56.86.54:8081")
                                 .description("development server")
                 ))
                 .info(new Info()
