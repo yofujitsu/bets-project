@@ -10,7 +10,7 @@ WORKDIR /app
 COPY . .
 RUN gradle test --no-daemon
 
-# ===== STAGE 3: сборка jar =====
+# ===== STAGE 3: сборка jar файла =====
 FROM gradle:8.10.2-jdk21 AS build
 WORKDIR /app
 COPY . .
