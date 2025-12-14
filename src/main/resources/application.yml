@@ -19,6 +19,8 @@ spring:
       path: /h2-console
 
 server:
+  port:
+    8081
   servlet:
     session:
       cookie:
